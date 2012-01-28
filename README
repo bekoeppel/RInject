@@ -1,0 +1,1 @@
+RInject is a lightweight tool for automated testing of web applications and services. It can be used to test HTTP(S) interfaces for service-level monitoring. RInject has a powerful verification- and parsing-engine basing on Regular Expressions.
