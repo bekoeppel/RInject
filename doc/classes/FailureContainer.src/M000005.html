@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>to_log_warn (FailureContainer)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File rinject.rb, line 223</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_log_warn</span>(<span class="ruby-identifier">logger</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@verification_failures</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">0</span> <span class="ruby-keyword kw">and</span> <span class="ruby-ivar">@case_failures</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">0</span>
+      <span class="ruby-comment cmt"># nothing to do, because no failure</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@verification_failures</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">==</span><span class="ruby-value">0</span>
+      <span class="ruby-comment cmt"># no verification_failures, but case_failures</span>
+      <span class="ruby-ivar">@case_failures</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cf</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-identifier">cf</span>.<span class="ruby-identifier">to_s</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-comment cmt"># verification_failures</span>
+      <span class="ruby-ivar">@case_failures</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cf</span><span class="ruby-operator">|</span>
+        <span class="ruby-ivar">@verification_failures</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">vf</span><span class="ruby-operator">|</span>
+          <span class="ruby-comment cmt"># if this verification_failure belongs to this case_failure</span>
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">cf</span>.<span class="ruby-identifier">fid</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">vf</span>.<span class="ruby-identifier">fid</span>
+            <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-identifier">vf</span>.<span class="ruby-identifier">to_s</span>)
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-identifier">cf</span>.<span class="ruby-identifier">to_s</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

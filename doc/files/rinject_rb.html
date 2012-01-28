@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: rinject.rb</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>rinject.rb</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>rinject.rb
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Tue Sep 09 06:33:12 +0200 2008</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+RInject.rb: RInject is a tool for automated testing of web applications and
+services. It can be used to test HTTP(S) interfaces for service-level
+monitoring. Compared to WebInject, RInject has a more powerful
+verification- and parsing-engine.
+</p>
+<pre>
+  *Author*:
+    Benedikt Koeppel
+    http://muasch.ch
+    mailto:be.public@gmail.com
+
+  *Licence*:
+    RInject: automated testing of web applications and services
+    Copyright (C) 2008 Benedikt A. Koeppel
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation; either version 3 of the License, or (at your
+    option) any later version.
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+    Public License for more details.
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.
+
+  *Usage*:
+  +rinject.rb [options]+
+    -c --config CONFIG: Specify config-file
+    -o --output OUTPUT: Specify output-location
+    -n --no-output: Disable any output
+    -C --cases CASES: From where to load testcases
+    -h --help: Help
+
+    RInject reads all testcases from the file, specified with -C or --cases
+
+    Syntax for XML-File:
+    &lt;testcases repeat=&quot;1&quot;&gt;
+            &lt;!-- +comment+ --&gt;
+            &lt;!-- basic schema of XML file --&gt;
+            &lt;case id=&quot;+id+&quot; sleep=&quot;+seconds+&quot; log=&quot;+error|all|request|response|none+&quot;&gt;
+                    &lt;description&gt;+description+&lt;/description&gt;
+                    &lt;error&gt;+error message+&lt;/error&gt;
+                    &lt;request method=&quot;+get|post+&quot; url=&quot;+url+&quot;&gt;
+                            &lt;post type=&quot;+enctype+&quot;&gt;
+                                    &lt;postarg name=&quot;+name1+&quot; value=&quot;+value1+&quot; /&gt;
+                                    &lt;postarg name=&quot;+nameN+&quot; value=&quot;+valueN+&quot; /&gt;
+                            &lt;/post&gt;
+                            &lt;header name=&quot;+header-name1+&quot; value=&quot;+header-value1+&quot; /&gt;
+                            &lt;header name=&quot;+header-nameN+&quot; value=&quot;+header-valueN+&quot; /&gt;
+                            &lt;httpauth username=&quot;+username+&quot; password=&quot;+password&quot;+ /&gt;
+                    &lt;/request&gt;
+                    &lt;response&gt;
+                            &lt;verify name=&quot;+verification-name1+&quot; error=&quot;+errormessage1+&quot; exp=&quot;+regular expression1+&quot; type=&quot;+positive|negative+&quot; /&gt;
+                            &lt;verify name=&quot;+verification-nameN+&quot; error=&quot;+errormessageN+&quot; exp=&quot;+regular expressionN+&quot; type=&quot;+positive|negative+&quot; /&gt;
+                            &lt;parse name=&quot;+parse-variable-name1+&quot; exp=&quot;+regular expression1+&quot; escape=&quot;+false|true+&quot; default=&quot;+default-value1+&quot; /&gt;
+                            &lt;parse name=&quot;+parse-variable-nameN+&quot; exp=&quot;+regular expressionN+&quot; escape=&quot;+false|true+&quot; default=&quot;+default-valueN+&quot; /&gt;
+                    &lt;/response&gt;
+            &lt;/case&gt;
+
+            &lt;!-- two examples --&gt;
+            &lt;!-- example 1:
+                - send POST-data to http://example.net/login.php with two additional headers
+                - verify that responsecode is 200
+                - verify that &quot;Welcome Mr.&quot; or &quot;Welcome Mrs.&quot; is in the source of the website
+                - verify that &quot;Failed to connect to&quot; is *not* in the source of the website
+                - read what's after &quot;Welcome Mr.&quot; or &quot;Welcome Mrs.&quot; in between to &quot;!&quot; and save this string as ${Username}
+                --&gt;
+            &lt;case id=&quot;1&quot; sleep=&quot;0&quot; log=&quot;error&quot;&gt;
+                    &lt;description&gt;POST Login to http://example.net/login.php&lt;/description&gt;
+                    &lt;error&gt;POST Login failed!&lt;/error&gt;
+                    &lt;request method=&quot;post&quot; url=&quot;http://example.net/login.php&quot;&gt;
+                            &lt;post type=&quot;application/x-www-form-urlencoded&quot;&gt;
+                                    &lt;postarg name=&quot;username&quot; value=&quot;rinject&quot; /&gt;
+                                    &lt;postarg name=&quot;password&quot; value=&quot;PW01234:&quot; /&gt;
+                                    &lt;postarg name=&quot;submit&quot; value=&quot;true&quot; /&gt;
+                            &lt;/post&gt;
+                            &lt;header name=&quot;UserAgent&quot; value=&quot;Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)&quot; /&gt;
+                            &lt;header name=&quot;Referer&quot; value=&quot;http://example.net/index.php&quot; /&gt;
+                    &lt;/request&gt;
+                    &lt;response&gt;
+                            &lt;verify name=&quot;HTTP responsecode&quot; error=&quot;HTTP code 200 expected&quot; exp=&quot;HTTP\/[\d]\.[\d] 200&quot; type=&quot;positive&quot; /&gt;
+                            &lt;verify name=&quot;Successfully logged in&quot; error=&quot;Welcome-String not found&quot; exp=&quot;Welcome (Mr\.|Mrs\.)&quot; type=&quot;positive&quot; /&gt;
+                            &lt;verify name=&quot;Database is not working&quot; error=&quot;DB is not working&quot; exp=&quot;Failed to connect to&quot; type=&quot;negative&quot; /&gt;
+                            &lt;parse name=&quot;Username&quot; exp=&quot;Welcome (Mr\.|Mrs\.) (.*?)!&quot; escape=&quot;false&quot; default=&quot;&quot; /&gt;
+                    &lt;/response&gt;
+            &lt;/case&gt;
+
+            &lt;!-- example 2:
+                - send GET-request to http://example.net/users/${Username} where ${Username} is the variable from case 1
+                - verify that responsecode is 200
+                - verify that &quot;Userinformation for ${Username}&quot; is in the source of the website
+                --&gt;
+            &lt;case id=&quot;2&quot; sleep=&quot;0&quot; log=&quot;error&quot;&gt;
+                    &lt;description&gt;View user details&lt;/description&gt;
+                    &lt;error&gt;User details can't be displayed&lt;/error&gt;
+                    &lt;request method=&quot;get&quot; url=&quot;http://example.net/users/${Username}&quot; /&gt;
+                    &lt;response&gt;
+                            &lt;verify name=&quot;HTTP responsecode&quot; error=&quot;HTTP code 200 expected&quot; exp=&quot;HTTP\/[\d]\.[\d] 200&quot; type=&quot;positive&quot; /&gt;
+                            &lt;verify name=&quot;Information for ${Username}&quot; error=&quot;No information about ${Username} displayed&quot; exp=&quot;Userinformation for ${Username}&quot; type=&quot;positive&quot; /&gt;
+                    &lt;/response&gt;
+            &lt;/case&gt;
+    &lt;/testcases&gt;
+
+    Running ./rinject.rb -C testcases.xml puts out the status in Nagios plugin format of all cases as last line
+    run +./rinject.rb [options] | tail -n 1+ to get only the Nagios output
+
+  *TODO*:
+    -c --config is not working yet
+    -o --output is not working yet
+    -n --no-output is not working yet
+    no stupid output, but correct logging instead!
+</pre>
+
+    </div>
+
+    <div id="requires-list">
+      <h3 class="section-bar">Required files</h3>
+
+      <div class="name-list">
+      rexml/document&nbsp;&nbsp;
+      optparse&nbsp;&nbsp;
+      net/http&nbsp;&nbsp;
+      net/https&nbsp;&nbsp;
+      uri&nbsp;&nbsp;
+      logger&nbsp;&nbsp;
+      base64&nbsp;&nbsp;
+      </div>
+    </div>
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000001">_</a>&nbsp;&nbsp;
+      <a href="#M000002">fail</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000001" class="method-detail">
+        <a name="M000001"></a>
+
+        <div class="method-heading">
+          <a href="rinject_rb.src/M000001.html" target="Code" class="method-signature"
+            onclick="popupCode('rinject_rb.src/M000001.html');return false;">
+          <span class="method-name">_</span><span class="method-args">(string)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+searches through string and replaces all found variables a variable within
+a string is marked as ${name}
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000002" class="method-detail">
+        <a name="M000002"></a>
+
+        <div class="method-heading">
+          <a href="rinject_rb.src/M000002.html" target="Code" class="method-signature"
+            onclick="popupCode('rinject_rb.src/M000002.html');return false;">
+          <span class="method-name">fail</span><span class="method-args">(id, verificationerror, caseerror, expression, type)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+creates a failure and adds this to failure-container
+</p>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
